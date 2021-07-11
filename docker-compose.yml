@@ -1,0 +1,36 @@
+version: '3.4'
+services:
+  api:
+    container_name: cleanApi
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/api
+    ports:
+      - 81:8080
+    tty: true
+    links:
+      - "database:database"
+  database:
+    image: postgres
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_DATABASE: api_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    tty: true
+    ports:
+      - "5432:5432"
+    expose:
+      - '5432'
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 84:8080
+networks:
+  default:
+    external:
+      name: api-net
